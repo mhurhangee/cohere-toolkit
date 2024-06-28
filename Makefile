@@ -1,5 +1,5 @@
 dev:
-	@docker compose watch
+	@docker-compose watch
 down:
 	@docker compose down
 run-tests:
@@ -15,7 +15,7 @@ exec-db:
 migration:
 	docker compose run --build backend alembic -c src/backend/alembic.ini revision --autogenerate
 migrate:
-	docker compose run --build backend alembic -c src/backend/alembic.ini upgrade head
+	docker-compose run --build backend alembic -c src/backend/alembic.ini upgrade head
 reset-db:
 	docker compose down
 	docker volume rm cohere_toolkit_db
