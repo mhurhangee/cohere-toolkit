@@ -57,13 +57,10 @@ services:
       - ./src/backend/alembic:/workspace/src/backend/alembic
       # Mount data folder to sync uploaded files
       - ./src/backend/data:/workspace/src/backend/data
-    # network_mode: host
-
   frontend:
     build:
       context: ./src/interfaces/coral_web
       dockerfile: Dockerfile
-    # Set environment variables directly in the docker-compose file
     environment:
       NEXT_PUBLIC_API_HOSTNAME: ${NEXT_PUBLIC_API_HOSTNAME}
       NEXT_PUBLIC_FRONTEND_HOSTNAME: ${NEXT_PUBLIC_FRONTEND_HOSTNAME}
@@ -77,15 +74,40 @@ services:
           target: /app
           ignore:
           - node_modules/
-
   terrarium:
     image: ghcr.io/cohere-ai/terrarium:latest
     ports:
       - '8080:8080'
     expose:
       - '8080'
+  weaviate:
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8088'
+    - --scheme
+    - http
+    image: cr.weaviate.io/semitechnologies/weaviate:1.25.5
+    ports:
+    - 8088:8088
+    - 50051:50051
+    expose:
+      - '8088'
+      - '50051'
+    volumes:
+    - weaviate_data:/var/lib/weaviate
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: 'text2vec-cohere,generative-cohere,reranker-cohere'
+      CLUSTER_HOSTNAME: 'node1'
 
 volumes:
   db:
     name: cohere_toolkit_db
     driver: local
+  weaviate_data:

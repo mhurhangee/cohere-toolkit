@@ -112,6 +112,8 @@ EXPOSE 5432/tcp
 EXPOSE 8000/tcp
 EXPOSE 4000/tcp
 EXPOSE 8080/tcp
+EXPOSE 8088/tcp
+EXPOSE 50051/tcp
 WORKDIR ${PG_HOME}
 
 CMD ["/sbin/entrypoint.sh"]
