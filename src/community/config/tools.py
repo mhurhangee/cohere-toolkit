@@ -9,7 +9,8 @@ from community.tools import (
     ManagedTool,
     PubMedRetriever,
     WolframAlpha,
-    PatentClaims
+    PatentClaims,
+    EPLaw
 )
 
 
@@ -21,6 +22,7 @@ class CommunityToolName(StrEnum):
     Wolfram_Alpha = "wolfram_alpha"
     ClinicalTrials = "clinical_trials"
     PatentClaims = "patent_claims"
+    EPLaw = "ep_law"
 
 
 COMMUNITY_TOOLS = {
@@ -100,6 +102,23 @@ COMMUNITY_TOOLS = {
         parameter_definitions={
             "patent_number": {
                 "description": "Patent number in the format, e.g., EP9999999 (i.e. includes the country code but no kind code).",
+                "type": "str",
+                "required": True,
+            }
+        },
+    ),
+    CommunityToolName.EPLaw: ManagedTool(
+        name=CommunityToolName.EPLaw,
+        display_name="European Patent Law",
+        implementation=EPLaw,
+        is_visible=True,
+        is_available=EPLaw.is_available(),
+        error_message="EPLaw is not available.",
+        category=Category.Function,
+        description="Query about European Patent Law",
+        parameter_definitions={
+            "query": {
+                "description": "Query about European Patent Law",
                 "type": "str",
                 "required": True,
             }
