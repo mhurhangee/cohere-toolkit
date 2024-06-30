@@ -9,6 +9,8 @@ from community.tools import (
     ManagedTool,
     PubMedRetriever,
     WolframAlpha,
+    PatentClaims,
+    EPLaw
 )
 
 
@@ -19,6 +21,8 @@ class CommunityToolName(StrEnum):
     File_Upload_LlamaIndex = "file_reader_llamaindex"
     Wolfram_Alpha = "wolfram_alpha"
     ClinicalTrials = "clinical_trials"
+    PatentClaims = "patent_claims"
+    EPLaw = "ep_law"
 
 
 COMMUNITY_TOOLS = {
@@ -85,6 +89,40 @@ COMMUNITY_TOOLS = {
         error_message="WolframAlphaFunctionTool is not available, please set the WOLFRAM_APP_ID environment variable.",
         category=Category.Function,
         description="Evaluate arithmetic expressions.",
+    ),
+    CommunityToolName.PatentClaims: ManagedTool(
+        name=CommunityToolName.PatentClaims,
+        display_name="Patent Claims",
+        implementation=PatentClaims,
+        is_visible=True,
+        is_available=PatentClaims.is_available(),
+        error_message="PatentClaimsRetriever is not available.",
+        category=Category.Function,
+        description="Retrieves patent claims for a patent publication using the patent number. Patent number should be in the format, e.g.,EP9999999 (i.e. includes the country code but no kind code).",
+        parameter_definitions={
+            "patent_number": {
+                "description": "Patent number in the format, e.g., EP9999999 (i.e. includes the country code but no kind code).",
+                "type": "str",
+                "required": True,
+            }
+        },
+    ),
+    CommunityToolName.EPLaw: ManagedTool(
+        name=CommunityToolName.EPLaw,
+        display_name="European Patent Law",
+        implementation=EPLaw,
+        is_visible=True,
+        is_available=EPLaw.is_available(),
+        error_message="EPLaw is not available.",
+        category=Category.Function,
+        description="Query about European Patent Law",
+        parameter_definitions={
+            "query": {
+                "description": "Query about European Patent Law",
+                "type": "str",
+                "required": True,
+            }
+        },
     ),
     CommunityToolName.ClinicalTrials: ManagedTool(
         name=CommunityToolName.ClinicalTrials,
